@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arrowverse — Le Choix Stratégique</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #05130b;
+            --panel-bg: #0d2116;
+            --accent-green: #00ff66;
+            --accent-red: #ff3366;
+            --accent-blue: #00e5ff;
+            --accent-gold: #ffcc00;
+            --text-main: #f0f4f8;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% 20%, #0f3822 0%, var(--bg-color) 70%);
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 950px;
+            background: var(--panel-bg);
+            border: 2px solid rgba(0, 255, 102, 0.3);
+            border-radius: 16px;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.6);
+            padding: 30px;
+            position: relative;
+            transform: translateZ(0);
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .home-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-main);
+            padding: 6px 14px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .home-btn:hover {
+            background: rgba(0, 255, 102, 0.2);
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2.2rem;
+            color: var(--accent-green);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        /* Écran d'accueil du jeu */
+        #welcome-screen {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .welcome-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 3rem;
+            color: var(--accent-green);
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px rgba(0, 255, 102, 0.4);
+        }
+
+        .rules-box {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(0, 255, 102, 0.2);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: left;
+            margin: 25px auto;
+            max-width: 700px;
+        }
+
+        .rules-box h3 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.4rem;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .rules-box ul {
+            list-style-type: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-size: 1.05rem;
+            line-height: 1.5;
+        }
+
+        .rules-box li::before {
+            content: "⚡ ";
+            color: var(--accent-green);
+        }
+
+        .start-btn {
+            background: var(--accent-green);
+            color: #000;
+            border: none;
+            padding: 16px 35px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.2s;
+            box-shadow: 0 0 20px rgba(0, 255, 102, 0.3);
+            margin-top: 10px;
+        }
+
+        .start-btn:hover {
+            background: #00cc52;
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(0, 255, 102, 0.5);
+        }
+
+        /* Jeu principal (masqué au départ) */
+        #game-area {
+            display: none;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.2rem;
+            color: var(--accent-gold);
+        }
+
+        .restart-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-main);
+            padding: 6px 14px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+        }
+
+        .restart-btn:hover {
+            background: rgba(255, 51, 102, 0.2);
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+        }
+
+        .situation-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border-left: 4px solid var(--accent-green);
+            text-align: center;
+        }
+
+        .situation-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.5rem;
+            color: var(--accent-green);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .situation-desc {
+            font-size: 1.15rem;
+            line-height: 1.6;
+            color: var(--text-main);
+        }
+
+        .heroes-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .hero-btn {
+            background: rgba(0, 255, 102, 0.08);
+            border: 2px solid var(--accent-green);
+            color: var(--text-main);
+            padding: 20px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .hero-btn:hover:not(:disabled) {
+            background: rgba(0, 255, 102, 0.2);
+            box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .hero-btn span {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent-green);
+            text-transform: uppercase;
+        }
+
+        .hero-btn img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid var(--accent-green);
+            background-color: #000;
+        }
+
+        .hero-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .outcome-box {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .outcome-box.active {
+            display: block;
+        }
+
+        .outcome-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            color: var(--accent-green);
+        }
+
+        .next-btn {
+            background: var::accent-green;
+            background-color: var(--accent-green);
+            color: #000;
+            border: none;
+            padding: 12px 25px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background 0.2s;
+            margin-top: 15px;
+        }
+        .next-btn:hover { background: #00cc52; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Bouton Accueil tout en haut à gauche -->
+        <div class="top-bar">
+            <button class="home-btn" onclick="goToHome()">Accueil</button>
+        </div>
+
+        <!-- PAGE D'ACCUEIL & RÈGLES -->
+        <div id="welcome-screen">
+            <h1 class="welcome-title">Arrowverse — Le Choix Stratégique</h1>
+            <p class="subtitle" style="margin-bottom: 20px;">L'arène interactive des crises du multivers</p>
+
+            <div class="rules-box">
+                <h3>Règles du Jeu</h3>
+                <ul>
+                    <li>12 situations de crise critiques et fidèles aux séries s'enchaîneront.</li>
+                    <li>À chaque manche, une urgence est déclarée et deux héros de l'équipe se présentent pour intervenir.</li>
+                    <li>Le chat discute, débat et choisit sa stratégie dans les commentaires.</li>
+                    <li>Le streamer clique sur le héros choisi pour valider la mission et découvrir la résolution tactique !</li>
+                </ul>
+            </div>
+
+            <button class="start-btn" onclick="startGame()">Lancer la Partie</button>
+        </div>
+
+        <!-- ZONE DU JEU (Masquée au départ) -->
+        <div id="game-area">
+            <header>
+                <h1>Arrowverse — Le Choix Stratégique</h1>
+                <p class="subtitle">Une situation de crise canonique, deux héros de l'équipe pour gérer la mission.</p>
+            </header>
+
+            <div class="status-bar">
+                <span id="situation-counter">Situation 1 / 12</span>
+                <button class="restart-btn" onclick="restartGame()">Recommencer</button>
+            </div>
+
+            <div class="situation-box">
+                <div class="situation-title" id="sit-title">Titre de la situation</div>
+                <p class="situation-desc" id="sit-desc">Description de la crise...</p>
+            </div>
+
+            <div class="heroes-section" id="heroes-section">
+                <button class="hero-btn" id="hero-0" onclick="chooseHero(0)">
+                    <img id="img-0" src="" alt="Héros 1">
+                    <span id="name-0">Héros 1</span>
+                    <p id="desc-0" style="font-size: 0.9rem; color: var(--text-muted);">Approche 1</p>
+                </button>
+                <button class="hero-btn" id="hero-1" onclick="chooseHero(1)">
+                    <img id="img-1" src="" alt="Héros 2">
+                    <span id="name-1">Héros 2</span>
+                    <p id="desc-1" style="font-size: 0.9rem; color: var(--text-muted);">Approche 2</p>
+                </button>
+            </div>
+
+            <div class="outcome-box" id="outcome-box">
+                <div class="outcome-title" id="outcome-title">Issue de la mission</div>
+                <p id="outcome-desc" style="font-size: 1.1rem; line-height: 1.5; margin-bottom: 15px;"></p>
+                <button class="next-btn" id="next-btn" onclick="nextSituation()">Mission Suivante</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const situations = [
+            {
+                title: "Infiltration d'un convoi de l'ADEOS",
+                desc: "Un convoi blindé de l'ADEOS transportant des armes expérimentales a été détourné par une cellule terroriste en plein centre de Star City. Qui envoyez-vous en première ligne pour intercepter le camion ?",
+                heroes: [
+                    { name: "Oliver Queen (Arrow)", img: "https://images.rtl.fr/~c/2000v2000/rtl/www/1318128-la-serie-arrow-est-arrivee-sur-les-ecrans-francais-en-decembre-2013.jpg", text: "Privilégie l'infiltration par les toits, neutralise les tireurs embusqués en silence et bloque le véhicule avec des flèches grappins." },
+                    { name: "John Diggle (Spartan)", img: "https://i.pinimg.com/736x/e9/f2/a8/e9f2a87610f88a8c14ef1d76582f1005.jpg", text: "Opte pour une frappe tactique frontale avec un véhicule blindé lourd pour couper la route aux terroristes." }
+                ]
+            },
+            {
+                title: "Fuite de matière noire aux S.T.A.R. Labs",
+                desc: "Un accélérateur de particules secondaire menace d'exploser après une brèche. Le sas de confinement manuel est bloqué de l'intérieur.",
+                heroes: [
+                    { name: "Barry Allen (The Flash)", img: "https://static.wikia.nocookie.net/heroes-fr/images/f/f8/Barry_Allen_Arrowverse_Grant_Gustin.png/revision/latest?cb=20200704120248&path-prefix=fr", text: "Utilise sa vitesse pour créer un vortex d'air inversé et dissiper les radiations avant l'explosion critique." },
+                    { name: "Cisco Ramon (Vibe)", img: "https://www.comicbasics.com/wp-content/uploads/2023/05/what-happened-to-cisco-in-the-flash.jpg", text: "Ouvre une brèche interdimensionnelle d'urgence pour rejeter l'excès d'énergie dans une Terre déserte." }
+                ]
+            },
+            {
+                title: "Menace d'attentat chimique au centre-ville",
+                desc: "Une ogive contenant un gaz neurotoxique est sur le point d'être activée dans le métro. Le compte à rebours indique 90 secondes.",
+                heroes: [
+                    { name: "Ray Palmer (The Atom)", img: "https://lovelace-media.imgix.net/uploads/859/b13a9f00-6a9a-0133-0c2b-0e34a4cc753d.jpg", text: "Réduit sa taille à l'échelle nanométrique pour s'introduire dans le circuit imprimé de l'ogive et désactiver le détonateur." },
+                    { name: "Sara Lance (White Canary)", img: "https://static.wikia.nocookie.net/marvel_dc/images/b/bb/Sara_Lance_Arrow_0004.jpg/revision/latest?cb=20190625235534", text: "Fonce à travers les gardes du corps pour neutraliser physiquement le porteur de la clé de décryptage avant la fin du temps." }
+                ]
+            },
+            {
+                title: "Piratage du réseau de défense de National City",
+                desc: "Un mystérieux virus informatique paralyse tous les écrans et les systèmes de sécurité de la ville, menaçant de divulguer des dossiers classés top-secret.",
+                heroes: [
+                    { name: "Kara Danvers (Supergirl)", img: "https://a1cf74336522e87f135f-2f21ace9a6cf0052456644b80fa06d4f.ssl.cf2.rackcdn.com/images/characters/large/800/Kate-Danvers.Supergirl.webp", text: "Localise physiquement le serveur principal et l'arrache du bâtiment pour stopper la propagation du code malveillant." },
+                    { name: "Nia Nal (Dreamer)", img: "https://media.vanityfair.com/photos/5c4f0433b6173e6d16293d32/master/pass/supergirl-trans-superhero-nicole-maines.jpg", text: "Utilise ses visions oniriques pour anticiper la source exacte du piratage et contrer les pare-feux à distance." }
+                ]
+            },
+            {
+                title: "Anomalie temporelle en 1942",
+                desc: "Le Waverider détecte un déplacement d'arme futuriste en plein milieu de la Seconde Guerre mondiale, menaçant de modifier radicalement l'histoire.",
+                heroes: [
+                    { name: "Nate Heywood (Steel)", img: "https://static.wikia.nocookie.net/arrow/images/c/c9/Citizen_Steel_%28robot%29.png/revision/latest?cb=20220113143857", text: "S'infiltre incognito en se fondant dans l'époque et localise l'artefact avant qu'il ne soit activé." },
+                    { name: "Mick Rory (Heat Wave)", img: "https://static.wikia.nocookie.net/villains/images/2/2d/78c7386cb261a379943675c72a17ceb0.jpg/revision/latest?cb=20180617014515", text: "Règle son lance-flammes pour faire fondre l'arme temporelle directement sur place, sans se soucier de la discrétion." }
+                ]
+            },
+            {
+                title: "Extraction d'un otage de la Ligue des Assassins",
+                desc: "Un informateur clé est retenu dans un temple fortifié en montagne, gardé par des dizaines de guerriers d'élite de Nyssa.",
+                heroes: [
+                    { name: "Nyssa al Ghul", img: "https://www.premiere.fr/sites/default/files/styles/scale_crop_1280x720/public/2018-05/arrow-katrina-law.jpg", text: "Utilise ses anciennes accréditations et sa connaissance intime des passages secrets pour exfiltrer l'otage en douceur." },
+                    { name: "Slade Wilson (Deathstroke)", img: "https://static.wikia.nocookie.net/arrow-france/images/e/e9/5.Arrow_Deathstroke_Returns_Slade_Wilson.jpg/revision/latest?cb=20171102202603&path-prefix=fr", text: "Lance un assaut ultra-violent par la grande porte pour faire diversion pendant que l'équipe récupère l'otage." }
+                ]
+            },
+            {
+                title: "Traque d'un méta-humain pyro-génique",
+                desc: "Un criminel doté de pouvoirs de feu s'est retranché dans un entrepôt abandonné du port, créant un véritable brasier autour de lui.",
+                heroes: [
+                    { name: "Caitlin Snow (Killer Frost)", img: "https://m.media-amazon.com/images/M/MV5BN2EwMzhjNmUtMmUxMi00NGI0LThhOWItY2IyY2Y3NmE3YzljXkEyXkFqcGc@._V1_.jpg", text: "Utilise ses pics de glace pour éteindre les flammes et neutraliser le suspect par un froid polaire instantané." },
+                    { name: "Wally West (Kid Flash)", img: "https://www.hollywoodreporter.com/wp-content/uploads/2016/07/kid_flash_publicity.jpg", text: "Court en cercle autour du bâtiment pour aspirer l'oxygène et étouffer le feu avant de capturer le fuyard." }
+                ]
+            },
+            {
+                title: "Surnaturel et possessions dans un manoir abandonné",
+                desc: "Des forces occultes s'échappent d'un grimoire ancien, provoquant des hallucinations et de la panique dans un secteur résidentiel.",
+                heroes: [
+                    { name: "John Constantine", img: "https://www.hollywoodreporter.com/wp-content/uploads/2015/05/constantine_s01e01_still.jpg", text: "Trace un cercle de protection, récite une incantation en araméen et bannit l'entité maléfique dans les limbes." },
+                    { name: "Damien Darhk", img: "https://static.wikia.nocookie.net/arrow/images/b/b5/Damien_Darhk.png/revision/latest?cb=20230522231125", text: "Absorbe la force vitale de l'entité par la magie noire pour la plier à sa volonté." }
+                ]
+            },
+            {
+                title: "Neutralisation de drones autonomes hostiles",
+                desc: "Une escouade de drones militaires piratés survole le quartier des affaires de Central City, visant les forces de police.",
+                heroes: [
+                    { name: "Black Lightning", img: "https://www.critictoo.com/wp-content/uploads/2018/02/Black-Lightning-Saison-1-Episode-2.jpg", text: "Envoie une impulsion électromagnétique ciblée qui grille les circuits de toute l'escouade de drones en un éclair." },
+                    { name: "Thea Queen (Speedy)", img: "https://www.critictoo.com/wp-content/uploads/2019/09/Willa-Holland-Thea-Queen-Arrow-Saison-6.jpg", text: "Utilise des flèches IEM tirées en rappel depuis les toits pour abattre les machines un par un." }
+                ]
+            },
+            {
+                title: "Incursion de forces extraterrestres mineures",
+                desc: "Un éclaireur de la flotte ennemie tente de pirater la tour de communication centrale pour appeler des renforts.",
+                heroes: [
+                    { name: "Mon-El", img: "https://static.wikia.nocookie.net/marvel_dc/images/2/2e/Mon-El_Supergirl_TV_Series_0004.jpg/revision/latest?cb=20190129144727", text: "Intercepte l'éclaireur au corps à corps sur le toit et détruit l'émetteur d'un coup de poing surpuissant." },
+                    { name: "J'onn J'onnz (Martian Manhunter)", img: "https://static.dc.com/2025-02/20250211_DC_News_MartianManhunter3.jpg", text: "Pénètre mentalement dans l'esprit de l'alien pour extraire les codes de cryptage et bloquer la transmission." }
+                ]
+            },
+            {
+                title: "Sabotage du train à grande vitesse de Star City",
+                desc: "Les freins du train urbain ont été sabotés et l'aiguillage mène droit vers une voie désaffectée en travaux.",
+                heroes: [
+                    { name: "Mia Queen (Green Arrow)", img: "https://static.wikia.nocookie.net/arrow-france/images/2/2b/3.Arrow-Green_Arrow_and_the_Canaries_Green_Arrow_II.jpeg/revision/latest?cb=20200114145606&path-prefix=fr", text: "Monte sur le toit de la rame en marche et encloue le système de freinage d'urgence manuel à l'aide d'une flèche renforcée." },
+                    { name: "Barry Allen (The Flash)", img: "https://static.wikia.nocookie.net/heroes-fr/images/f/f8/Barry_Allen_Arrowverse_Grant_Gustin.png/revision/latest?cb=20200704120248&path-prefix=fr", text: "Se place à l'avant du train et utilise sa friction cinétique pour ralentir progressivement la rame jusqu'à l'arrêt complet." }
+                ]
+            },
+            {
+                title: "Affrontement contre un sosie maléfique du Multivers",
+                desc: "Un doppelgänger mystérieux s'est introduit dans le QG et tente de s'emparer des dossiers top-secrets de l'équipe.",
+                heroes: [
+                    { name: "Oliver Queen (Arrow)", img: "https://images.rtl.fr/~c/2000v2000/rtl/www/1318128-la-serie-arrow-est-arrivee-sur-les-ecrans-francais-en-decembre-2013.jpg", text: "Affronte son double dans un duel tactique au corps à corps pour prouver qui est le véritable justicier." },
+                    { name: "Kate Kane (Batwoman)", img: "https://www.premiere.fr/sites/default/files/styles/scale_crop_1280x720/public/2020-06/batwoman-.jpg", text: "Utilise des fumigènes tactiques et des techniques d'arts martiaux pour piéger le sosie dans les ombres." }
+                ]
+            }
+        ];
+
+        let currentSituation = 0;
+
+        function startGame() {
+            document.getElementById('welcome-screen').style.display = 'none';
+            document.getElementById('game-area').style.display = 'block';
+            loadSituation();
+        }
+
+        function loadSituation() {
+            if (currentSituation >= situations.length) {
+                showEndGame();
+                return;
+            }
+
+            const sit = situations[currentSituation];
+            document.getElementById('situation-counter').textContent = `Situation ${currentSituation + 1} / ${situations.length}`;
+            document.getElementById('sit-title').textContent = sit.title;
+            document.getElementById('sit-desc').textContent = sit.desc;
+
+            // Héros 0
+            document.getElementById('name-0').textContent = sit.heroes[0].name;
+            document.getElementById('img-0').src = sit.heroes[0].img;
+            document.getElementById('desc-0').textContent = sit.heroes[0].text;
+
+            // Héros 1
+            document.getElementById('name-1').textContent = sit.heroes[1].name;
+            document.getElementById('img-1').src = sit.heroes[1].img;
+            document.getElementById('desc-1').textContent = sit.heroes[1].text;
+
+            document.getElementById('hero-0').disabled = false;
+            document.getElementById('hero-1').disabled = false;
+            document.getElementById('heroes-section').style.display = 'grid';
+            document.getElementById('outcome-box').classList.remove('active');
+        }
+
+        function chooseHero(index) {
+            const sit = situations[currentSituation];
+            const chosenHero = sit.heroes[index];
+
+            document.getElementById('hero-0').disabled = true;
+            document.getElementById('hero-1').disabled = true;
+            document.getElementById('heroes-section').style.display = 'none';
+
+            const outcomeBox = document.getElementById('outcome-box');
+            const outcomeTitle = document.getElementById('outcome-title');
+            const outcomeDesc = document.getElementById('outcome-desc');
+
+            outcomeTitle.textContent = `✅ Approche validée : ${chosenHero.name}`;
+            outcomeDesc.textContent = chosenHero.text;
+
+            outcomeBox.classList.add('active');
+
+            if (currentSituation === situations.length - 1) {
+                document.getElementById('next-btn').textContent = "Voir le Bilan des Missions";
+            } else {
+                document.getElementById('next-btn').textContent = "Mission Suivante";
+            }
+        }
+
+        function nextSituation() {
+            currentSituation++;
+            loadSituation();
+        }
+
+        function restartGame() {
+            currentSituation = 0;
+            document.getElementById('game-area').innerHTML = `
+                <header>
+                    <h1>Arrowverse — Le Choix Stratégique</h1>
+                    <p class="subtitle">Une situation de crise canonique, deux héros de l'équipe pour gérer la mission.</p>
+                </header>
+                <div class="status-bar">
+                    <span id="situation-counter">Situation 1 / 12</span>
+                    <button class="restart-btn" onclick="restartGame()">Recommencer</button>
+                </div>
+                <div class="situation-box">
+                    <div class="situation-title" id="sit-title">Titre de la situation</div>
+                    <p class="situation-desc" id="sit-desc">Description de la crise...</p>
+                </div>
+                <div class="heroes-section" id="heroes-section">
+                    <button class="hero-btn" id="hero-0" onclick="chooseHero(0)">
+                        <img id="img-0" src="" alt="Héros 1">
+                        <span id="name-0">Héros 1</span>
+                        <p id="desc-0" style="font-size: 0.9rem; color: var(--text-muted);">Approche 1</p>
+                    </button>
+                    <button class="hero-btn" id="hero-1" onclick="chooseHero(1)">
+                        <img id="img-1" src="" alt="Héros 2">
+                        <span id="name-1">Héros 2</span>
+                        <p id="desc-1" style="font-size: 0.9rem; color: var(--text-muted);">Approche 2</p>
+                    </button>
+                </div>
+                <div class="outcome-box" id="outcome-box">
+                    <div class="outcome-title" id="outcome-title">Issue de la mission</div>
+                    <p id="outcome-desc" style="font-size: 1.1rem; line-height: 1.5; margin-bottom: 15px;"></p>
+                    <button class="next-btn" id="next-btn" onclick="nextSituation()">Mission Suivante</button>
+                </div>
+            `;
+            loadSituation();
+        }
+
+        function goToHome() {
+            // Remplace "accueil.html" par l'adresse exacte de ta page d'accueil
+            window.location.href = "accueil.html";
+        }
+
+        function showEndGame() {
+            document.getElementById('game-area').innerHTML = `
+                <div style="text-align: center; padding: 30px;">
+                    <h2 style="font-family: 'Rajdhani', sans-serif; font-size: 2.2rem; color: var(--accent-green); margin-bottom: 15px;">
+                        🎯 TOUTES LES MISSIONS SONT ACCOMPLIES !
+                    </h2>
+                    <p style="font-size: 1.2rem; line-height: 1.6; color: var(--text-main); margin-bottom: 25px;">
+                        Grâce aux choix tactiques de ton chat et à ton animation, l'équipe de l'Arrowverse a résolu toutes les crises avec succès.
+                    </p>
+                    <div style="display: flex; justify-content: center; gap: 15px;">
+                        <button class="next-btn" onclick="restartGame()">Recommencer</button>
+                        <button class="next-btn" style="background: var(--accent-gold); color: #000;" onclick="goToHome()">Accueil</button>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
